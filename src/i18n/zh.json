@@ -110,6 +110,12 @@
     "searchMarket": "搜索 skills.sh 市场...",
     "oneClickInstall": "一键安装",
     "viewOnWeb": "在 skills.sh 查看",
+    "pagination": {
+      "summary": "显示第 {{start}} - {{end}} 项，共 {{total}} 个 Skill",
+      "page": "第 {{current}} / {{total}} 页",
+      "previous": "上一页",
+      "next": "下一页"
+    },
     "installing": "安装中...",
     "dragDrop": "拖拽 Skills 文件夹到此处",
     "dragDropDesc": "支持包含 SKILL.md 的文件夹、.zip 压缩包或单体 .skill 文件。",
@@ -135,7 +141,14 @@
       "importedAll": "已导入全部本地 Skills",
       "noResults": "没有发现可导入的本地 Skills",
       "noResultsHint": "当前目录可能已经全部纳入管理，或者相关 Agent 目录中还没有 Skills。",
-      "locations": "{{count}} 个来源位置"
+      "locations": "{{count}} 个来源位置",
+      "listHint": "检测到现有本地 Skills，可直接导入到中央仓库并加入当前场景。",
+      "listImportedHint": "扫描结果都已纳入中央仓库，无需重复导入。",
+      "stats": {
+        "detected": "已发现",
+        "pending": "待导入",
+        "imported": "已导入"
+      }
     }
   },
   "settings": {

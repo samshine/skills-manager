@@ -110,6 +110,12 @@
     "searchMarket": "Search skills.sh market...",
     "oneClickInstall": "Install",
     "viewOnWeb": "View on skills.sh",
+    "pagination": {
+      "summary": "Showing {{start}} - {{end}} of {{total}} skills",
+      "page": "Page {{current}} of {{total}}",
+      "previous": "Previous",
+      "next": "Next"
+    },
     "installing": "Installing...",
     "dragDrop": "Drag & Drop Skills Folder Here",
     "dragDropDesc": "Supports folders with SKILL.md, .zip archives, or .skill files.",
@@ -135,7 +141,14 @@
       "importedAll": "Imported all local skills",
       "noResults": "No local skills found",
       "noResultsHint": "Everything may already be managed, or those tool folders do not contain skills yet.",
-      "locations": "{{count}} locations"
+      "locations": "{{count}} locations",
+      "listHint": "Existing local skills were found and can be imported directly into the central library.",
+      "listImportedHint": "Everything in this scan is already in the central library.",
+      "stats": {
+        "detected": "Detected",
+        "pending": "Pending",
+        "imported": "Imported"
+      }
     }
   },
   "settings": {
