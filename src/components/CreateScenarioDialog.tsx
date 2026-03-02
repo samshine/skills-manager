@@ -33,22 +33,22 @@ export function CreateScenarioDialog({ open, onClose, onCreate }: Props) {
     }
   };
 
-  const inputClass = "w-full bg-[#0C0C10] border border-[#1C1C24] rounded-[4px] px-3 py-2 text-[12px] text-zinc-200 focus:outline-none focus:border-[#22222C] transition-all placeholder-zinc-700";
+  const inputClass = "w-full bg-background border border-border-subtle rounded-[4px] px-3 py-2 text-[12px] text-secondary focus:outline-none focus:border-border transition-all placeholder-faint";
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-[#131318] border border-[#22222C] rounded-xl w-full max-w-[400px] p-5 shadow-2xl">
+      <div className="relative bg-surface border border-border rounded-xl w-full max-w-[400px] p-5 shadow-2xl">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-[13px] font-semibold text-zinc-100">{t("scenario.create")}</h2>
-          <button onClick={onClose} className="text-zinc-600 hover:text-zinc-300 p-1 rounded transition-colors outline-none">
+          <h2 className="text-[13px] font-semibold text-primary">{t("scenario.create")}</h2>
+          <button onClick={onClose} className="text-muted hover:text-secondary p-1 rounded transition-colors outline-none">
             <X className="w-4 h-4" />
           </button>
         </div>
 
         <div className="space-y-3">
           <div>
-            <label className="block text-[11px] font-medium text-zinc-500 mb-1">{t("scenario.name")}</label>
+            <label className="block text-[11px] font-medium text-tertiary mb-1">{t("scenario.name")}</label>
             <input
               type="text"
               value={name}
@@ -60,7 +60,7 @@ export function CreateScenarioDialog({ open, onClose, onCreate }: Props) {
             />
           </div>
           <div>
-            <label className="block text-[11px] font-medium text-zinc-500 mb-1">{t("scenario.description")}</label>
+            <label className="block text-[11px] font-medium text-tertiary mb-1">{t("scenario.description")}</label>
             <input
               type="text"
               value={description}
@@ -70,7 +70,7 @@ export function CreateScenarioDialog({ open, onClose, onCreate }: Props) {
             />
           </div>
           <div>
-            <label className="block text-[11px] font-medium text-zinc-500 mb-1.5">{t("scenario.icon")}</label>
+            <label className="block text-[11px] font-medium text-tertiary mb-1.5">{t("scenario.icon")}</label>
             <div className="grid grid-cols-5 gap-1.5">
               {SCENARIO_ICON_OPTIONS.map((option) => {
                 const Icon = option.icon;
@@ -81,10 +81,10 @@ export function CreateScenarioDialog({ open, onClose, onCreate }: Props) {
                     type="button"
                     onClick={() => setIcon(option.key)}
                     className={cn(
-                      "flex h-9 items-center justify-center rounded-lg border bg-[#0C0C10] transition-all outline-none",
+                      "flex h-9 items-center justify-center rounded-lg border bg-background transition-all outline-none",
                       selected
                         ? `${option.activeClass} ${option.colorClass}`
-                        : "border-[#1C1C24] text-zinc-600 hover:border-[#22222C] hover:text-zinc-300"
+                        : "border-border-subtle text-muted hover:border-border hover:text-secondary"
                     )}
                     title={option.label}
                   >
@@ -97,14 +97,14 @@ export function CreateScenarioDialog({ open, onClose, onCreate }: Props) {
           <div className="flex justify-end gap-2 pt-1">
             <button
               onClick={onClose}
-              className="px-3 py-1.5 rounded-[4px] text-[12px] font-medium text-zinc-500 hover:text-zinc-200 hover:bg-[#1C1C24] transition-colors outline-none"
+              className="px-3 py-1.5 rounded-[4px] text-[12px] font-medium text-tertiary hover:text-secondary hover:bg-surface-hover transition-colors outline-none"
             >
               {t("common.cancel")}
             </button>
             <button
               onClick={handleCreate}
               disabled={!name.trim() || loading}
-              className="px-3 py-1.5 rounded-[4px] bg-indigo-600 hover:bg-indigo-500 text-white text-[12px] font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-indigo-500/50 outline-none"
+              className="px-3 py-1.5 rounded-[4px] bg-accent-dark hover:bg-accent text-white text-[12px] font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-accent-border outline-none"
             >
               {loading ? t("common.loading") : t("common.create")}
             </button>

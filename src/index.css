@@ -3,8 +3,61 @@
 @tailwind utilities;
 
 @layer base {
+  /* Light theme (default) */
+  :root {
+    --color-bg: #FAFAFA;
+    --color-bg-secondary: #F4F4F5;
+    --color-surface: #FFFFFF;
+    --color-surface-hover: #F4F4F5;
+    --color-surface-active: #E4E4E7;
+    --color-border: #D4D4D8;
+    --color-border-subtle: #E4E4E7;
+    --color-text-primary: #18181B;
+    --color-text-secondary: #27272A;
+    --color-text-tertiary: #71717A;
+    --color-text-muted: #A1A1AA;
+    --color-text-faint: #D4D4D8;
+    --color-accent: #059669;
+    --color-accent-light: #10B981;
+    --color-accent-dark: #047857;
+    --color-accent-bg: rgba(5,150,105,0.08);
+    --color-accent-border: rgba(5,150,105,0.25);
+    --color-danger: #DC2626;
+    --color-danger-bg: rgba(220,38,38,0.08);
+  }
+
+  /* Dark theme */
+  .dark {
+    --color-bg: #0C0C0F;
+    --color-bg-secondary: #0F0F13;
+    --color-surface: #131317;
+    --color-surface-hover: #17171E;
+    --color-surface-active: #1E1E28;
+    --color-border: #222229;
+    --color-border-subtle: #1C1C22;
+    --color-text-primary: #F4F4F5;
+    --color-text-secondary: #D4D4D8;
+    --color-text-tertiary: #71717A;
+    --color-text-muted: #52525B;
+    --color-text-faint: #3F3F46;
+    --color-accent: #10B981;
+    --color-accent-light: #34D399;
+    --color-accent-dark: #059669;
+    --color-accent-bg: rgba(16,185,129,0.08);
+    --color-accent-border: rgba(16,185,129,0.25);
+    --color-danger: #EF4444;
+    --color-danger-bg: rgba(239,68,68,0.08);
+  }
+
+  /* System preference fallback (when no .dark class and user chose "system") */
+  @media (prefers-color-scheme: dark) {
+    :root:not(.dark) {
+      /* JS will add .dark class, but this is a brief fallback */
+    }
+  }
+
   body {
-    @apply bg-background text-zinc-200 font-sans antialiased overflow-hidden;
+    @apply bg-background text-primary font-sans antialiased overflow-hidden;
     letter-spacing: -0.014em;
   }
 }

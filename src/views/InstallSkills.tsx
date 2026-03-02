@@ -178,8 +178,8 @@ export function InstallSkills() {
     <div className="max-w-[1200px] mx-auto h-full flex flex-col animate-in fade-in duration-400">
       {/* Page header + tabs */}
       <div className="mb-5">
-        <h1 className="text-[15px] font-semibold text-zinc-100 mb-4">{t("install.title")}</h1>
-        <div className="flex gap-1 border-b border-[#1C1C24]">
+        <h1 className="text-[15px] font-semibold text-primary mb-4">{t("install.title")}</h1>
+        <div className="flex gap-1 border-b border-border-subtle">
           {[
             { id: "market" as const, label: t("install.browseMarket"), icon: Box },
             { id: "local" as const, label: t("install.localInstall"), icon: UploadCloud },
@@ -194,8 +194,8 @@ export function InstallSkills() {
                 className={cn(
                   "pb-2.5 px-1 text-[12px] font-medium flex items-center gap-1.5 border-b-2 transition-colors outline-none mr-4",
                   isActive
-                    ? "border-indigo-500 text-indigo-400"
-                    : "border-transparent text-zinc-600 hover:text-zinc-400"
+                    ? "border-accent text-accent"
+                    : "border-transparent text-muted hover:text-tertiary"
                 )}
               >
                 <Icon className="w-3.5 h-3.5" />
@@ -210,7 +210,7 @@ export function InstallSkills() {
       {activeTab === "market" && (
         <div className="flex-1 animate-in fade-in duration-300">
           <div className="flex items-center justify-between mb-4">
-            <div className="flex bg-[#131318] border border-[#1C1C24] rounded-[4px] p-px">
+            <div className="flex bg-surface border border-border-subtle rounded-[4px] p-px">
               {[
                 { id: "hot" as const, label: t("install.hot"), icon: Star },
                 { id: "trending" as const, label: t("install.trending"), icon: TrendingUp },
@@ -224,7 +224,7 @@ export function InstallSkills() {
                     onClick={() => setMarketTab(tab.id)}
                     className={cn(
                       "flex items-center gap-1.5 px-3 py-1 rounded-[3px] text-[11px] font-medium transition-colors outline-none",
-                      isActive ? "bg-[#1E1E2A] text-zinc-200" : "text-zinc-600 hover:text-zinc-400"
+                      isActive ? "bg-surface-active text-secondary" : "text-muted hover:text-tertiary"
                     )}
                   >
                     <Icon className="w-3 h-3" />
@@ -237,35 +237,35 @@ export function InstallSkills() {
 
           {marketLoading ? (
             <div className="flex items-center justify-center py-16">
-              <Loader2 className="w-5 h-5 text-zinc-600 animate-spin" />
+              <Loader2 className="w-5 h-5 text-muted animate-spin" />
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-2.5 pb-8 lg:grid-cols-3">
               {marketSkills.map((skill) => (
                 <div
                   key={skill.id}
-                  className="bg-[#131318] border border-[#1C1C24] rounded-lg p-3.5 hover:border-[#22222C] transition-colors flex flex-col"
+                  className="bg-surface border border-border-subtle rounded-lg p-3.5 hover:border-border transition-colors flex flex-col"
                 >
                   <div className="flex justify-between items-start mb-1.5">
-                    <h3 className="font-semibold text-zinc-200 text-[13px] truncate">{skill.name || skill.skill_id}</h3>
+                    <h3 className="font-semibold text-secondary text-[13px] truncate">{skill.name || skill.skill_id}</h3>
                   </div>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-[10px] text-indigo-400 font-medium bg-indigo-500/10 px-1.5 py-0.5 rounded">
+                    <span className="text-[10px] text-accent-light font-medium bg-accent-bg px-1.5 py-0.5 rounded">
                       @{skill.source}
                     </span>
-                    <span className="text-[10px] text-zinc-600 flex items-center gap-1">
+                    <span className="text-[10px] text-muted flex items-center gap-1">
                       <DownloadCloud className="w-3 h-3" />
                       {skill.installs > 1000
                         ? `${(skill.installs / 1000).toFixed(0)}k`
                         : skill.installs}
                     </span>
                   </div>
-                  <p className="text-[11px] text-zinc-600 line-clamp-2 mb-auto">{skill.skill_id}</p>
+                  <p className="text-[11px] text-muted line-clamp-2 mb-auto">{skill.skill_id}</p>
                   <div className="pt-2.5 flex justify-end">
                     <button
                       onClick={() => handleInstallSkillssh(skill)}
                       disabled={installing === skill.id}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-indigo-600 hover:bg-indigo-500 text-white text-[11px] font-medium transition-colors w-full justify-center disabled:opacity-50 border border-indigo-500/50"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-accent-dark hover:bg-accent text-white text-[11px] font-medium transition-colors w-full justify-center disabled:opacity-50 border border-accent-border"
                     >
                       {installing === skill.id ? (
                         <Loader2 className="w-3 h-3 animate-spin" />
@@ -287,23 +287,23 @@ export function InstallSkills() {
         <div className="flex-1 animate-in fade-in duration-300 space-y-4 pb-8">
           <div
             onClick={handleLocalInstall}
-            className="w-full bg-[#131318] border border-dashed border-[#22222C] rounded-lg p-6 flex flex-col items-center justify-center text-center hover:bg-[#17171F] hover:border-indigo-500/40 transition-colors cursor-pointer group"
+            className="w-full bg-surface border border-dashed border-border rounded-lg p-6 flex flex-col items-center justify-center text-center hover:bg-surface-hover hover:border-accent-border transition-colors cursor-pointer group"
           >
-            <div className="w-10 h-10 bg-[#1C1C24] rounded-full flex items-center justify-center mb-3 group-hover:bg-indigo-500/10 transition-colors">
-              <FolderUp className="w-5 h-5 text-zinc-600 group-hover:text-indigo-400" />
+            <div className="w-10 h-10 bg-surface-hover rounded-full flex items-center justify-center mb-3 group-hover:bg-accent-bg transition-colors">
+              <FolderUp className="w-5 h-5 text-muted group-hover:text-accent-light" />
             </div>
-            <h3 className="text-[13px] font-semibold text-zinc-200 mb-1">{t("install.dragDrop")}</h3>
-            <p className="text-zinc-600 text-[12px] mb-3 max-w-sm">{t("install.dragDropDesc")}</p>
-            <button className="px-3 py-1.5 rounded-[4px] bg-[#1E1E2A] hover:bg-[#252535] border border-[#22222C] text-zinc-200 text-[11px] font-medium transition-colors">
+            <h3 className="text-[13px] font-semibold text-secondary mb-1">{t("install.dragDrop")}</h3>
+            <p className="text-muted text-[12px] mb-3 max-w-sm">{t("install.dragDropDesc")}</p>
+            <button className="px-3 py-1.5 rounded-[4px] bg-surface-active hover:bg-surface-hover border border-border text-secondary text-[11px] font-medium transition-colors">
               {t("install.selectLocal")}
             </button>
           </div>
 
-          <section className="bg-[#131318] border border-[#1C1C24] rounded-lg overflow-hidden">
-            <div className="px-4 py-3.5 border-b border-[#1C1C24] flex items-center justify-between gap-4">
+          <section className="bg-surface border border-border-subtle rounded-lg overflow-hidden">
+            <div className="px-4 py-3.5 border-b border-border-subtle flex items-center justify-between gap-4">
               <div>
-                <h2 className="text-[13px] font-semibold text-zinc-200">{t("install.scan.title")}</h2>
-                <p className="text-[11px] text-zinc-600 mt-0.5">
+                <h2 className="text-[13px] font-semibold text-secondary">{t("install.scan.title")}</h2>
+                <p className="text-[11px] text-muted mt-0.5">
                   {scanResult
                     ? t("install.scan.summary", {
                       tools: scanResult.tools_scanned,
@@ -317,7 +317,7 @@ export function InstallSkills() {
                 <button
                   onClick={runScan}
                   disabled={scanLoading}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-[#1C1C24] hover:bg-[#1E1E2A] border border-[#22222C] text-zinc-200 text-[11px] font-medium transition-colors disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-surface-hover hover:bg-surface-active border border-border text-secondary text-[11px] font-medium transition-colors disabled:opacity-50"
                 >
                   <RefreshCw className={cn("w-3.5 h-3.5", scanLoading && "animate-spin")} />
                   {t("install.scan.rescan")}
@@ -325,7 +325,7 @@ export function InstallSkills() {
                 <button
                   onClick={handleImportAllDiscovered}
                   disabled={scanLoading || importingAll || !scanResult || scanResult.groups.length === 0}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-indigo-600 hover:bg-indigo-500 border border-indigo-500/50 text-white text-[11px] font-medium transition-colors disabled:opacity-50"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-accent-dark hover:bg-accent border border-accent-border text-white text-[11px] font-medium transition-colors disabled:opacity-50"
                 >
                   {importingAll ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -339,19 +339,19 @@ export function InstallSkills() {
 
             <div className="p-4">
               {scanLoading ? (
-                <div className="py-12 flex items-center justify-center gap-2.5 text-zinc-600">
+                <div className="py-12 flex items-center justify-center gap-2.5 text-muted">
                   <Loader2 className="w-4 h-4 animate-spin" />
                   <span className="text-[12px]">{t("install.scan.scanning")}</span>
                 </div>
               ) : scanResult && scanResult.groups.length === 0 ? (
                 <div className="py-12 flex flex-col items-center justify-center text-center">
-                  <div className="w-10 h-10 rounded-lg bg-[#1C1C24] border border-[#22222C] flex items-center justify-center mb-3">
-                    <FolderSearch className="w-5 h-5 text-zinc-600" />
+                  <div className="w-10 h-10 rounded-lg bg-surface-hover border border-border flex items-center justify-center mb-3">
+                    <FolderSearch className="w-5 h-5 text-muted" />
                   </div>
-                  <h3 className="text-[13px] font-semibold text-zinc-400 mb-1">
+                  <h3 className="text-[13px] font-semibold text-tertiary mb-1">
                     {t("install.scan.noResults")}
                   </h3>
-                  <p className="text-[11px] text-zinc-600">{t("install.scan.noResultsHint")}</p>
+                  <p className="text-[11px] text-muted">{t("install.scan.noResultsHint")}</p>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -360,15 +360,15 @@ export function InstallSkills() {
                     return (
                       <article
                         key={group.name}
-                        className="bg-[#0F0F14] border border-[#1C1C24] rounded-lg overflow-hidden"
+                        className="bg-bg-secondary border border-border-subtle rounded-lg overflow-hidden"
                       >
                         <button
                           type="button"
                           onClick={() => toggleGroup(group.name)}
-                          className="w-full px-3.5 py-3 flex items-center justify-between hover:bg-[#17171F] transition-colors"
+                          className="w-full px-3.5 py-3 flex items-center justify-between hover:bg-surface-hover transition-colors"
                         >
                           <div className="flex items-center gap-3">
-                            <div className="w-7 h-7 rounded-md bg-[#1C1C24] border border-[#22222C] flex items-center justify-center text-zinc-600">
+                            <div className="w-7 h-7 rounded-md bg-surface-hover border border-border flex items-center justify-center text-muted">
                               {isExpanded ? (
                                 <ChevronDown className="w-3.5 h-3.5" />
                               ) : (
@@ -377,14 +377,14 @@ export function InstallSkills() {
                             </div>
                             <div className="text-left">
                               <div className="flex items-center gap-2">
-                                <h3 className="text-[12px] font-semibold text-zinc-200">{group.name}</h3>
+                                <h3 className="text-[12px] font-semibold text-secondary">{group.name}</h3>
                                 {group.imported && (
                                   <span className="px-1.5 py-px rounded text-[9px] font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                                     {t("install.scan.imported")}
                                   </span>
                                 )}
                               </div>
-                              <p className="text-[10px] text-zinc-700 mt-px">
+                              <p className="text-[10px] text-faint mt-px">
                                 {t("install.scan.locations", { count: group.locations.length })}
                               </p>
                             </div>
@@ -392,17 +392,17 @@ export function InstallSkills() {
                         </button>
 
                         {isExpanded && (
-                          <div className="px-3.5 pb-3.5 space-y-2 border-t border-[#1C1C24]">
+                          <div className="px-3.5 pb-3.5 space-y-2 border-t border-border-subtle">
                             {group.locations.map((location) => (
                               <div
                                 key={location.id}
-                                className="mt-3 p-3 rounded-lg bg-[#131318] border border-[#1C1C24] flex flex-col gap-3 lg:flex-row lg:items-center"
+                                className="mt-3 p-3 rounded-lg bg-surface border border-border-subtle flex flex-col gap-3 lg:flex-row lg:items-center"
                               >
                                 <div className="min-w-0 flex-1">
-                                  <span className="inline-flex px-1.5 py-px rounded text-[10px] font-medium bg-white/5 text-zinc-500 border border-white/5 mb-1.5">
+                                  <span className="inline-flex px-1.5 py-px rounded text-[10px] font-medium bg-surface-hover text-tertiary border border-border-subtle mb-1.5">
                                     {location.tool}
                                   </span>
-                                  <code className="block text-[11px] leading-5 break-all bg-[#0C0C10] border border-[#1C1C24] rounded-[4px] px-2.5 py-1.5 text-zinc-400 font-mono">
+                                  <code className="block text-[11px] leading-5 break-all bg-background border border-border-subtle rounded-[4px] px-2.5 py-1.5 text-tertiary font-mono">
                                     {location.found_path}
                                   </code>
                                 </div>
@@ -415,7 +415,7 @@ export function InstallSkills() {
                                   <button
                                     onClick={() => handleImportDiscovered(location.found_path, group.name)}
                                     disabled={importingPaths.has(location.found_path)}
-                                    className="shrink-0 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-indigo-600 hover:bg-indigo-500 border border-indigo-500/50 text-white text-[11px] font-medium transition-colors disabled:opacity-50"
+                                    className="shrink-0 flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-accent-dark hover:bg-accent border border-accent-border text-white text-[11px] font-medium transition-colors disabled:opacity-50"
                                   >
                                     {importingPaths.has(location.found_path) ? (
                                       <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -442,16 +442,16 @@ export function InstallSkills() {
       {/* Git tab */}
       {activeTab === "git" && (
         <div className="flex-1 animate-in fade-in duration-300">
-          <div className="max-w-lg bg-[#131318] border border-[#1C1C24] rounded-lg p-5">
-            <div className="mb-4 flex items-center justify-center w-10 h-10 bg-[#1C1C24] rounded-lg border border-[#22222C]">
-              <Github className="w-5 h-5 text-zinc-400" />
+          <div className="max-w-lg bg-surface border border-border-subtle rounded-lg p-5">
+            <div className="mb-4 flex items-center justify-center w-10 h-10 bg-surface-hover rounded-lg border border-border">
+              <Github className="w-5 h-5 text-tertiary" />
             </div>
-            <h2 className="text-[13px] font-semibold text-zinc-100 mb-1">{t("install.gitTitle")}</h2>
-            <p className="text-zinc-600 text-[12px] mb-4">{t("install.gitDesc")}</p>
+            <h2 className="text-[13px] font-semibold text-primary mb-1">{t("install.gitTitle")}</h2>
+            <p className="text-muted text-[12px] mb-4">{t("install.gitDesc")}</p>
 
             <div className="space-y-3">
               <div>
-                <label className="block text-[11px] font-medium text-zinc-500 mb-1">
+                <label className="block text-[11px] font-medium text-tertiary mb-1">
                   {t("install.repoUrl")}
                 </label>
                 <input
@@ -459,27 +459,27 @@ export function InstallSkills() {
                   value={gitUrl}
                   onChange={(e) => setGitUrl(e.target.value)}
                   placeholder={t("install.repoUrlPlaceholder")}
-                  className="w-full bg-[#0C0C10] border border-[#1C1C24] rounded-[4px] px-3 py-2 text-[12px] text-zinc-200 focus:outline-none focus:border-[#22222C] transition-all placeholder-zinc-700"
+                  className="w-full bg-background border border-border-subtle rounded-[4px] px-3 py-2 text-[12px] text-secondary focus:outline-none focus:border-border transition-all placeholder-faint"
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-medium text-zinc-500 mb-1 flex items-center gap-2">
+                <label className="block text-[11px] font-medium text-tertiary mb-1 flex items-center gap-2">
                   {t("install.customName")}
-                  <span className="text-[10px] text-zinc-700 font-normal">{t("install.customNameOptional")}</span>
+                  <span className="text-[10px] text-faint font-normal">{t("install.customNameOptional")}</span>
                 </label>
                 <input
                   type="text"
                   value={gitName}
                   onChange={(e) => setGitName(e.target.value)}
                   placeholder={t("install.customNamePlaceholder")}
-                  className="w-full bg-[#0C0C10] border border-[#1C1C24] rounded-[4px] px-3 py-2 text-[12px] text-zinc-200 focus:outline-none focus:border-[#22222C] transition-all placeholder-zinc-700"
+                  className="w-full bg-background border border-border-subtle rounded-[4px] px-3 py-2 text-[12px] text-secondary focus:outline-none focus:border-border transition-all placeholder-faint"
                 />
               </div>
               <div className="pt-2">
                 <button
                   onClick={handleGitInstall}
                   disabled={!gitUrl.trim() || gitLoading}
-                  className="flex items-center justify-center gap-2 px-4 py-2 rounded-[4px] bg-indigo-600 hover:bg-indigo-500 text-white text-[12px] font-medium transition-colors w-full border border-indigo-500/50 disabled:opacity-50"
+                  className="flex items-center justify-center gap-2 px-4 py-2 rounded-[4px] bg-accent-dark hover:bg-accent text-white text-[12px] font-medium transition-colors w-full border border-accent-border disabled:opacity-50"
                 >
                   {gitLoading ? (
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />

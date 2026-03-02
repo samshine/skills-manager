@@ -61,8 +61,8 @@ export const SCENARIO_ICON_OPTIONS: ScenarioIconOption[] = [
     key: "rocket",
     label: "Launch",
     icon: Rocket,
-    colorClass: "text-violet-300",
-    activeClass: "border-violet-500/30 bg-violet-500/12",
+    colorClass: "text-orange-300",
+    activeClass: "border-orange-500/30 bg-orange-500/12",
   },
   {
     key: "notebook-pen",
@@ -75,8 +75,8 @@ export const SCENARIO_ICON_OPTIONS: ScenarioIconOption[] = [
     key: "blocks",
     label: "Systems",
     icon: Blocks,
-    colorClass: "text-sky-300",
-    activeClass: "border-sky-500/30 bg-sky-500/12",
+    colorClass: "text-teal-300",
+    activeClass: "border-teal-500/30 bg-teal-500/12",
   },
   {
     key: "palette",
@@ -130,4 +130,3 @@ export function getScenarioIconOption(
       : inferScenarioIconKey(scenario);
   return SCENARIO_ICON_MAP.get(key) || SCENARIO_ICON_OPTIONS[0];
 }
-

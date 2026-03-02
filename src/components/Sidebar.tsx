@@ -91,7 +91,7 @@ export function Sidebar() {
 
   return (
     <>
-      <div className="w-[220px] flex-shrink-0 bg-[#0F0F14] border-r border-[#1C1C24] h-full flex flex-col select-none relative z-10">
+      <div className="w-[220px] flex-shrink-0 bg-bg-secondary border-r border-border-subtle h-full flex flex-col select-none relative z-10">
         {/* Traffic-light safe zone — blank drag region */}
         <div
           className="h-[38px] shrink-0"
@@ -103,13 +103,13 @@ export function Sidebar() {
           style={{ WebkitAppRegion: "drag" } as CSSProperties}
         >
           <div
-            className="w-[20px] h-[20px] rounded-[5px] bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(99,102,241,0.25)]"
+            className="w-[20px] h-[20px] rounded-[5px] bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(16,185,129,0.25)]"
             style={{ WebkitAppRegion: "no-drag" } as CSSProperties}
           >
             <Hammer className="w-3 h-3 text-white" />
           </div>
           <span
-            className="text-[14px] font-semibold text-zinc-300 tracking-tight truncate leading-[20px]"
+            className="text-[14px] font-semibold text-secondary tracking-tight truncate leading-[20px]"
             style={{ WebkitAppRegion: "no-drag" } as CSSProperties}
           >
             {t("app.name")}
@@ -128,11 +128,11 @@ export function Sidebar() {
                 className={cn(
                   "flex items-center gap-2.5 px-2.5 py-[7px] rounded-[5px] text-sm font-medium transition-colors outline-none",
                   isActive
-                    ? "bg-[#1E1E2A] text-zinc-100"
-                    : "text-zinc-500 hover:text-zinc-300 hover:bg-[#17171F]"
+                    ? "bg-surface-active text-primary"
+                    : "text-tertiary hover:text-secondary hover:bg-surface-hover"
                 )}
               >
-                <Icon className={cn("w-4 h-4 shrink-0", isActive ? "text-indigo-400" : "text-zinc-600")} />
+                <Icon className={cn("w-4 h-4 shrink-0", isActive ? "text-accent" : "text-muted")} />
                 {item.name}
               </Link>
             );
@@ -140,11 +140,11 @@ export function Sidebar() {
         </div>
 
         {/* Divider */}
-        <div className="mx-3 mt-3.5 mb-2.5 border-t border-[#1C1C24]" />
+        <div className="mx-3 mt-3.5 mb-2.5 border-t border-border-subtle" />
 
         {/* Scenarios */}
         <div className="px-2.5 flex-1 overflow-y-auto scrollbar-hide min-h-0">
-          <div className="text-[11px] font-semibold text-zinc-700 mb-1.5 px-2.5 tracking-[0.1em] uppercase">
+          <div className="text-[11px] font-semibold text-faint mb-1.5 px-2.5 tracking-[0.1em] uppercase">
             {t("sidebar.scenarios")}
           </div>
           <div className="space-y-0.5">
@@ -157,14 +157,14 @@ export function Sidebar() {
                   key={scenario.id}
                   className={cn(
                     "group flex items-center gap-0.5 rounded-[5px] transition-colors",
-                    isActive ? "bg-[#1E1E2A]" : "hover:bg-[#17171F]"
+                    isActive ? "bg-surface-active" : "hover:bg-surface-hover"
                   )}
                 >
                   <button
                     onClick={() => handleSwitchScenario(scenario.id)}
                     className={cn(
                       "flex min-w-0 flex-1 items-center gap-2 px-2.5 py-[7px] text-left text-sm outline-none",
-                      isActive ? "font-medium text-zinc-100" : "text-zinc-500 group-hover:text-zinc-300"
+                      isActive ? "font-medium text-primary" : "text-tertiary group-hover:text-secondary"
                     )}
                   >
                     <span
@@ -172,7 +172,7 @@ export function Sidebar() {
                         "flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded border",
                         isActive
                           ? `${scenarioIcon.activeClass} ${scenarioIcon.colorClass}`
-                          : "border-[#22222A] bg-[#141419] text-zinc-600 group-hover:border-[#2C2C38] group-hover:text-zinc-400"
+                          : "border-border bg-surface text-muted group-hover:border-border group-hover:text-tertiary"
                       )}
                     >
                       <ScenarioIcon className="h-3 w-3" />
@@ -183,8 +183,8 @@ export function Sidebar() {
                         className={cn(
                           "rounded-full px-1.5 text-[11px] font-medium leading-[18px]",
                           isActive
-                            ? "bg-indigo-500/20 text-indigo-300"
-                            : "bg-[#1C1C24] text-zinc-700 group-hover:bg-[#22222C]"
+                            ? "bg-accent-bg text-accent-light"
+                            : "bg-surface-hover text-faint group-hover:bg-surface-active"
                         )}
                       >
                         {scenario.skill_count}
@@ -195,14 +195,14 @@ export function Sidebar() {
                   <div className="mr-1.5 flex items-center opacity-0 transition group-hover:opacity-100">
                     <button
                       onClick={(event) => handleRenameClick(event, scenario)}
-                      className="rounded p-1 text-zinc-700 transition hover:bg-[#1C1C24] hover:text-zinc-300"
+                      className="rounded p-1 text-faint transition hover:bg-surface-hover hover:text-secondary"
                       title={t("common.rename")}
                     >
                       <Pencil className="h-3 w-3" />
                     </button>
                     <button
                       onClick={(event) => handleDeleteClick(event, scenario)}
-                      className="rounded p-1 text-zinc-700 transition hover:bg-[#1C1C24] hover:text-red-400"
+                      className="rounded p-1 text-faint transition hover:bg-surface-hover hover:text-red-400"
                       title={t("common.delete")}
                     >
                       <Trash2 className="h-3 w-3" />
@@ -215,7 +215,7 @@ export function Sidebar() {
 
           <button
             onClick={() => setShowCreate(true)}
-            className="flex items-center gap-2 px-2.5 py-[7px] mt-0.5 rounded-[5px] text-[13px] text-zinc-700 hover:text-zinc-400 hover:bg-[#17171F] transition-colors w-full outline-none"
+            className="flex items-center gap-2 px-2.5 py-[7px] mt-0.5 rounded-[5px] text-[13px] text-faint hover:text-tertiary hover:bg-surface-hover transition-colors w-full outline-none"
           >
             <Plus className="w-3.5 h-3.5" />
             {t("sidebar.newScenario")}
@@ -223,20 +223,20 @@ export function Sidebar() {
         </div>
 
         {/* Settings */}
-        <div className="p-2.5 border-t border-[#1C1C24] shrink-0">
+        <div className="p-2.5 border-t border-border-subtle shrink-0">
           <Link
             to="/settings"
             className={cn(
               "flex items-center gap-2.5 px-2.5 py-[7px] rounded-[5px] text-sm font-medium transition-colors outline-none",
               location.pathname === "/settings"
-                ? "bg-[#1E1E2A] text-zinc-100"
-                : "text-zinc-500 hover:text-zinc-300 hover:bg-[#17171F]"
+                ? "bg-surface-active text-primary"
+                : "text-tertiary hover:text-secondary hover:bg-surface-hover"
             )}
           >
             <Settings
               className={cn(
                 "w-4 h-4 shrink-0",
-                location.pathname === "/settings" ? "text-indigo-400" : "text-zinc-600"
+                location.pathname === "/settings" ? "text-accent" : "text-muted"
               )}
             />
             {t("sidebar.settings")}

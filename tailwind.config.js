@@ -4,13 +4,35 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class',
   theme: {
     extend: {
       colors: {
-        background: '#0C0C10',
-        surface: '#131318',
-        border: '#22222C',
-        'border-subtle': '#1C1C24',
+        background: 'var(--color-bg)',
+        'bg-secondary': 'var(--color-bg-secondary)',
+        surface: 'var(--color-surface)',
+        'surface-hover': 'var(--color-surface-hover)',
+        'surface-active': 'var(--color-surface-active)',
+        border: 'var(--color-border)',
+        'border-subtle': 'var(--color-border-subtle)',
+        accent: {
+          DEFAULT: 'var(--color-accent)',
+          light: 'var(--color-accent-light)',
+          dark: 'var(--color-accent-dark)',
+          bg: 'var(--color-accent-bg)',
+          border: 'var(--color-accent-border)',
+        },
+        danger: {
+          DEFAULT: 'var(--color-danger)',
+          bg: 'var(--color-danger-bg)',
+        },
+      },
+      textColor: {
+        primary: 'var(--color-text-primary)',
+        secondary: 'var(--color-text-secondary)',
+        tertiary: 'var(--color-text-tertiary)',
+        muted: 'var(--color-text-muted)',
+        faint: 'var(--color-text-faint)',
       },
       fontFamily: {
         sans: [
