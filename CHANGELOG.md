@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.1] - 2026-03-08
+
+### Added
+- GitHub Actions cross-platform build workflow (macOS, Linux, Windows)
+- CHANGELOG and macOS troubleshooting guide
+
+### Changed
+- Moved sync/unsync buttons from skill card list into SkillDetailPanel
+- Moved assets (icon, demo GIFs) from docs/ to assets/
+- Set bundle targets to "all" for cross-platform builds
+
 ## [1.0.0] - 2025-03-08
 
 ### Added
