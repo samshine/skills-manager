@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   Search,
   LayoutGrid,
@@ -12,6 +12,9 @@ import {
   Layers,
   RefreshCw,
   RotateCcw,
+  GitBranch,
+  ArrowUpCircle,
+  Loader2,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -20,7 +23,7 @@ import { useApp } from "../context/AppContext";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { SkillDetailPanel } from "../components/SkillDetailPanel";
 import * as api from "../lib/tauri";
-import type { ManagedSkill, ToolInfo } from "../lib/tauri";
+import type { ManagedSkill, ToolInfo, GitBackupStatus } from "../lib/tauri";
 
 function getToolDisplayName(toolKey: string, tools: ToolInfo[]) {
   return tools.find((tool) => tool.key === toolKey)?.display_name || toolKey;
@@ -46,6 +49,9 @@ export function MySkills() {
   const [checkingAll, setCheckingAll] = useState(false);
   const [checkingSkillId, setCheckingSkillId] = useState<string | null>(null);
   const [updatingSkillId, setUpdatingSkillId] = useState<string | null>(null);
+  const [gitStatus, setGitStatus] = useState<GitBackupStatus | null>(null);
+  const [gitLoading, setGitLoading] = useState<string | null>(null); // "start" | "sync"
+  const [gitRemoteConfig, setGitRemoteConfig] = useState("");
 
   const installedTools = tools.filter((tool) => tool.installed);
   const activeScenarioName = activeScenario?.name || t("mySkills.currentScenarioFallback");
@@ -72,6 +78,59 @@ export function MySkills() {
     () => skills.find((skill) => skill.id === detailSkillId) || null,
     [detailSkillId, skills]
   );
+
+  const mapGitError = (error: unknown) => {
+    const message = String(error);
+    if (
+      message.includes("Authentication failed")
+      || message.includes("Permission denied")
+      || message.includes("could not read Username")
+    ) {
+      return t("settings.gitErrorAuth");
+    }
+    if (
+      message.includes("Could not resolve host")
+      || message.includes("Failed to connect")
+      || message.includes("Connection timed out")
+    ) {
+      return t("settings.gitErrorNetwork");
+    }
+    if (message.includes("CONFLICT") || message.includes("conflict")) {
+      return t("settings.gitErrorConflict");
+    }
+    if (message.includes("not a git repository")) {
+      return t("settings.gitErrorNotRepo");
+    }
+    return t("settings.gitErrorGeneric");
+  };
+
+  const refreshGitStatus = async () => {
+    try {
+      const status = await api.gitBackupStatus();
+      setGitStatus(status);
+    } catch {
+      // not critical
+    }
+  };
+
+  useEffect(() => {
+    (async () => {
+      const savedRemote = (await api.getSettings("git_backup_remote_url").catch(() => null))?.trim() || "";
+      const status = await api.gitBackupStatus().catch(() => null);
+      setGitStatus(status);
+
+      if (savedRemote) {
+        setGitRemoteConfig(savedRemote);
+        return;
+      }
+
+      const detectedRemote = status?.remote_url?.trim() || "";
+      if (detectedRemote) {
+        setGitRemoteConfig(detectedRemote);
+        api.setSettings("git_backup_remote_url", detectedRemote).catch(() => {});
+      }
+    })();
+  }, []);
 
   const getSyncMeta = (skill: ManagedSkill) => {
     const syncedToolKeys = skill.targets
@@ -196,6 +255,118 @@ export function MySkills() {
     }
   };
 
+  const handleGitStartBackup = async () => {
+    setGitLoading("start");
+    try {
+      if (gitRemoteConfig) {
+        await api.gitBackupClone(gitRemoteConfig);
+        toast.success(t("settings.gitCloneSuccess"));
+      } else {
+        await api.gitBackupInit();
+        toast.success(t("settings.gitInitSuccess"));
+      }
+      await refreshGitStatus();
+    } catch (e) {
+      toast.error(mapGitError(e));
+    } finally {
+      setGitLoading(null);
+    }
+  };
+
+  const handleGitSync = async () => {
+    setGitLoading("sync");
+    try {
+      let status = await api.gitBackupStatus();
+      if (!status.is_repo) {
+        toast.info(t("settings.gitNotInitialized"));
+        return;
+      }
+
+      if (!status.remote_url && gitRemoteConfig) {
+        await api.gitBackupSetRemote(gitRemoteConfig);
+        status = await api.gitBackupStatus();
+      }
+
+      if (!status.remote_url) {
+        toast.info(t("settings.gitNeedRemoteSetup"));
+        return;
+      }
+
+      if (status.behind > 0 && (status.has_changes || status.ahead > 0)) {
+        toast.info(t("settings.gitNeedPullFirst"));
+        return;
+      }
+
+      if (status.behind > 0) {
+        await api.gitBackupPull();
+        status = await api.gitBackupStatus();
+        toast.success(t("settings.gitPullSuccess"));
+      }
+
+      let committed = false;
+      if (status.has_changes) {
+        await api.gitBackupCommit(t("settings.gitCommitPlaceholder"));
+        committed = true;
+      }
+
+      if (committed || status.ahead > 0) {
+        await api.gitBackupPush();
+        toast.success(t("settings.gitSyncSuccess"));
+      } else {
+        toast.success(t("settings.gitUpToDate"));
+      }
+
+      await refreshGitStatus();
+    } catch (e) {
+      toast.error(mapGitError(e));
+    } finally {
+      setGitLoading(null);
+    }
+  };
+
+  const getGitSyncButtonState = () => {
+    if (!gitStatus) {
+      return {
+        label: t("mySkills.gitRepoSync"),
+        disabled: false,
+        toneClassName: "text-secondary",
+      };
+    }
+    if (!gitStatus.remote_url && !gitRemoteConfig) {
+      return {
+        label: t("mySkills.gitRepoNeedRemote"),
+        disabled: true,
+        toneClassName: "text-red-500",
+      };
+    }
+    if (gitStatus.behind > 0 && (gitStatus.has_changes || gitStatus.ahead > 0)) {
+      return {
+        label: t("mySkills.gitRepoSync"),
+        disabled: false,
+        toneClassName: "text-red-500",
+      };
+    }
+    if (gitStatus.has_changes || gitStatus.ahead > 0 || gitStatus.behind > 0) {
+      return {
+        label: t("mySkills.gitRepoSync"),
+        disabled: false,
+        toneClassName: "text-amber-500",
+      };
+    }
+    if (!gitStatus.has_changes && gitStatus.ahead === 0 && gitStatus.behind === 0) {
+      return {
+        label: t("mySkills.gitRepoUpToDate"),
+        disabled: true,
+        toneClassName: "text-muted",
+      };
+    }
+    return {
+      label: t("mySkills.gitRepoSync"),
+      disabled: false,
+      toneClassName: "text-secondary",
+    };
+  };
+
   const sourceIcon = (type: string) => {
     switch (type) {
       case "git":
@@ -291,10 +462,45 @@ export function MySkills() {
         </div>
 
         <div className="app-segmented">
+          {!gitStatus?.is_repo ? (
+            <button
+              onClick={handleGitStartBackup}
+              disabled={!!gitLoading}
+              className="inline-flex items-center gap-1 rounded-md px-3 py-2 text-[13px] font-medium text-muted transition-colors hover:bg-surface-hover hover:text-secondary disabled:opacity-50"
+            >
+              {gitLoading === "start" ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              ) : (
+                <GitBranch className="h-3.5 w-3.5" />
+              )}
+              {gitLoading === "start" ? t("settings.gitInitializing") : t("settings.gitStartBackup")}
+            </button>
+          ) : (
+            (() => {
+              const gitSyncButton = getGitSyncButtonState();
+              return (
+                <button
+                  onClick={handleGitSync}
+                  disabled={!!gitLoading || gitSyncButton.disabled}
+                  className={cn(
+                    "inline-flex items-center gap-1 rounded-md px-3 py-2 text-[13px] font-medium transition-colors hover:bg-surface-hover disabled:opacity-50",
+                    gitSyncButton.toneClassName
+                  )}
+                >
+                  {gitLoading === "sync" ? (
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  ) : (
+                    <ArrowUpCircle className="h-3.5 w-3.5" />
+                  )}
+                  {gitLoading === "sync" ? t("mySkills.gitRepoSyncing") : gitSyncButton.label}
+                </button>
+              );
+            })()
+          )}
           <button
             onClick={handleCheckAllUpdates}
             disabled={checkingAll}
-            className="mr-2 inline-flex items-center gap-1 rounded-md px-3 py-2 text-[13px] font-medium text-muted transition-colors hover:bg-surface-hover hover:text-secondary disabled:opacity-50"
+            className="ml-2 mr-2 inline-flex items-center gap-1 rounded-md border-l border-border-subtle pl-4 pr-3 py-2 text-[13px] font-medium text-muted transition-colors hover:bg-surface-hover hover:text-secondary disabled:opacity-50"
           >
             <RefreshCw className={cn("h-3.5 w-3.5", checkingAll && "animate-spin")} />
             {t("mySkills.updateActions.checkAll")}
