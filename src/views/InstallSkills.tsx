@@ -724,7 +724,7 @@ export function InstallSkills() {
                   </span>
                   <div ref={filterContainerRef} className="relative min-w-0 flex-1">
                     {/* Hidden measurement layer — never visible, keeps all pills in DOM for width queries */}
-                    <div className="pointer-events-none invisible absolute left-0 top-0 flex items-center gap-1.5" aria-hidden="true">
+                    <div className="pointer-events-none invisible absolute left-0 top-0 flex h-0 items-center gap-1.5 overflow-hidden" aria-hidden="true">
                       <button
                         ref={allBtnMeasureRef}
                         tabIndex={-1}
@@ -853,8 +853,8 @@ export function InstallSkills() {
                                           });
                                           return next;
                                         });
-                                      } else if (e.key === "Enter") {
-                                        const target = filteredOverflowSources[sourceFocusedIndex] ?? filteredOverflowSources[0];
+                                      } else if (e.key === "Enter" && sourceFocusedIndex >= 0) {
+                                        const target = filteredOverflowSources[sourceFocusedIndex];
                                         if (target) {
                                           setMarketSourceFilter(target);
                                           resetSourceOverflowState();
@@ -862,7 +862,7 @@ export function InstallSkills() {
                                       } else if (e.key === "Escape") {
                                         resetSourceOverflowState();
                                       }
-                                    }}
+                                    }
                                     placeholder={t("common.search")}
                                     className="app-input w-full bg-background py-1 pl-6 pr-2 text-[12px]"
                                     autoFocus
