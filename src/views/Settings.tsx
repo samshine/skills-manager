@@ -37,6 +37,8 @@ export function Settings() {
   const { theme, setTheme } = useThemeContext();
   const [syncMode, setSyncMode] = useState("symlink");
   const [defaultScenario, setDefaultScenario] = useState("");
+  const [closeAction, setCloseAction] = useState("");
+  const [showTrayIcon, setShowTrayIcon] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [openingRepo, setOpeningRepo] = useState(false);
   const [openingGithub, setOpeningGithub] = useState(false);
@@ -54,6 +56,11 @@ export function Settings() {
     api.getSettings("sync_mode").then((v) => { if (v) setSyncMode(v); });
     api.getSettings("default_scenario").then((v) => { if (v) setDefaultScenario(v); });
     api.getSettings("proxy_url").then((v) => { setProxyInput(v ?? ""); });
+    api.getSettings("close_action").then((v) => { setCloseAction(v ?? ""); });
+    api.getSettings("show_tray_icon").then((v) => {
+      const normalized = (v ?? "true").trim().toLowerCase();
+      setShowTrayIcon(!(normalized === "false" || normalized === "0" || normalized === "no" || normalized === "off"));
+    });
     api.getCentralRepoPath().then(setCentralRepoPath).catch(() => {});
 
     (async () => {
@@ -114,6 +121,21 @@ export function Settings() {
   const handleDefaultScenarioChange = async (id: string) => {
     setDefaultScenario(id);
     await api.setSettings("default_scenario", id);
+  };
+
+  const handleCloseActionChange = async (action: string) => {
+    if (action === "hide" && !showTrayIcon) return;
+    setCloseAction(action);
+    await api.setSettings("close_action", action);
+  };
+
+  const handleShowTrayIconChange = async (enabled: boolean) => {
+    setShowTrayIcon(enabled);
+    await api.setSettings("show_tray_icon", enabled ? "true" : "false");
+    if (!enabled && closeAction === "hide") {
+      setCloseAction("close");
+      await api.setSettings("close_action", "close");
+    }
   };
 
   const handleLanguageChange = (lng: string) => {
@@ -439,6 +461,61 @@ export function Settings() {
                   <option value="zh">简体中文 (zh-CN)</option>
                   <option value="en">English (en-US)</option>
                 </select>
+              </div>
+            </div>
+
+            {/* Close action */}
+            <div className="px-4 py-3 flex items-center justify-between gap-4">
+              <div>
+                <h3 className="text-[13px] text-secondary font-medium mb-0.5">{t("settings.closeAction")}</h3>
+                <p className="text-[13px] text-muted">{t("settings.closeActionDesc")}</p>
+                {!showTrayIcon && (
+                  <p className="text-[12px] text-muted mt-1">{t("settings.trayIconOffHint")}</p>
+                )}
+              </div>
+              <div className="flex bg-background border border-border-subtle rounded-[4px] p-px shrink-0">
+                {(["", "hide", "close"] as const).map((val) => (
+                  <button
+                    key={val}
+                    onClick={() => handleCloseActionChange(val)}
+                    disabled={val === "hide" && !showTrayIcon}
+                    className={cn(
+                      segmentedButtonClass,
+                      closeAction === val ? "bg-surface-active text-secondary" : "text-muted hover:text-tertiary",
+                      val === "hide" && !showTrayIcon && "opacity-50 cursor-not-allowed hover:text-muted"
+                    )}
+                  >
+                    {t(`settings.closeAction_${val || "ask"}`)}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Tray icon */}
+            <div className="px-4 py-3 flex items-center justify-between gap-4">
+              <div>
+                <h3 className="text-[13px] text-secondary font-medium mb-0.5">{t("settings.trayIcon")}</h3>
+                <p className="text-[13px] text-muted">{t("settings.trayIconDesc")}</p>
+              </div>
+              <div className="flex bg-background border border-border-subtle rounded-[4px] p-px shrink-0">
+                <button
+                  onClick={() => handleShowTrayIconChange(true)}
+                  className={cn(
+                    segmentedButtonClass,
+                    showTrayIcon ? "bg-surface-active text-secondary" : "text-muted hover:text-tertiary"
+                  )}
+                >
+                  {t("settings.trayIcon_on")}
+                </button>
+                <button
+                  onClick={() => handleShowTrayIconChange(false)}
+                  className={cn(
+                    segmentedButtonClass,
+                    !showTrayIcon ? "bg-surface-active text-secondary" : "text-muted hover:text-tertiary"
+                  )}
+                >
+                  {t("settings.trayIcon_off")}
+                </button>
               </div>
             </div>
           </div>
