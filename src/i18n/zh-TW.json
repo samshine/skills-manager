@@ -227,6 +227,7 @@
     "gitAlreadyInstalled": "「{{name}}」已安裝，重新安裝將會更新。",
     "aiSearchPlaceholder": "AI 搜尋 — 描述你需要什麼...",
     "aiSearchNoKey": "請在設定中配置 SkillsMP API Key 以啟用 AI 搜尋",
+    "aiSearchButton": "AI 搜尋",
     "aiSearchToggle": "AI 搜尋（SkillsMP）",
     "gitReinstall": "重新安裝並更新",
     "installClone": "安裝並複製",

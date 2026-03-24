@@ -247,6 +247,7 @@
     "gitAlreadyInstalled": "\"{{name}}\" is already installed. Reinstalling will update it.",
     "aiSearchPlaceholder": "AI search — describe what you need...",
     "aiSearchNoKey": "Set your SkillsMP API key in Settings to enable AI search",
+    "aiSearchButton": "AI Search",
     "aiSearchToggle": "AI-powered search (SkillsMP)",
     "installClone": "Clone & Preview",
     "gitPreview": {
