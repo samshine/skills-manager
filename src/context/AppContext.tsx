@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, useCallback, useRef, type ReactNode } from "react";
 import { listen } from "@tauri-apps/api/event";
 import type { ManagedSkill, Project, Scenario, ToolInfo } from "../lib/tauri";
 import * as api from "../lib/tauri";
@@ -32,6 +32,7 @@ interface AppState {
 const AppContext = createContext<AppState | null>(null);
 
 export function AppProvider({ children }: { children: ReactNode }) {
+  const SKILL_UPDATE_TOAST_ID = "skill-update-available";
   const [scenarios, setScenarios] = useState<Scenario[]>([]);
   const [activeScenario, setActiveScenario] = useState<Scenario | null>(null);
   const [tools, setTools] = useState<ToolInfo[]>([]);
@@ -41,6 +42,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [appError, setAppError] = useState<string | null>(null);
   const [helpOpen, setHelpOpen] = useState(false);
   const [detailSkillId, setDetailSkillId] = useState<string | null>(null);
+  const autoCheckInFlightRef = useRef(false);
+  const lastUpdateNotificationRef = useRef<string | null>(null);
 
   const setTranslatedError = useCallback((key: string) => {
     setAppError(i18n.t("common.loadFailed", { item: i18n.t(key) }));
@@ -173,19 +176,36 @@ export function AppProvider({ children }: { children: ReactNode }) {
     const hasGitSkills = managedSkills.some(
       (s) => s.source_type === "git" || s.source_type === "skillssh"
     );
-    if (!hasGitSkills) return;
+    if (!hasGitSkills || autoCheckInFlightRef.current) return;
 
     // Delay to avoid slowing down initial render
     const timer = setTimeout(() => {
+      autoCheckInFlightRef.current = true;
       api.checkAllSkillUpdates(false)
         .then(async () => {
           const skills = await api.getManagedSkills();
           setManagedSkills(skills);
-          const updatable = skills.filter((s) => s.update_status === "update_available");
+          const updatable = skills
+            .filter((s) => s.update_status === "update_available")
+            .sort((a, b) => a.id.localeCompare(b.id));
+
+          if (updatable.length === 0) {
+            lastUpdateNotificationRef.current = null;
+            toast.dismiss(SKILL_UPDATE_TOAST_ID);
+            return;
+          }
+
+          const notificationSignature = updatable.map((skill) => skill.id).join("|");
+          if (lastUpdateNotificationRef.current === notificationSignature) {
+            return;
+          }
+
+          lastUpdateNotificationRef.current = notificationSignature;
           if (updatable.length > 0) {
             toast.info(
               i18n.t("mySkills.updateNotification", { count: updatable.length }),
               {
+                id: SKILL_UPDATE_TOAST_ID,
                 duration: 8000,
                 action: {
                   label: i18n.t("mySkills.viewUpdates"),
@@ -204,7 +224,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
             );
           }
         })
-        .catch(() => {}); // silent failure
+        .catch(() => {}) // silent failure
+        .finally(() => {
+          autoCheckInFlightRef.current = false;
+        });
     }, 3000);
     return () => clearTimeout(timer);
   // eslint-disable-next-line react-hooks/exhaustive-deps
