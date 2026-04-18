@@ -5,6 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.14.1] - 2026-04-18
+
+### Added
+- Command palette for quick navigation and actions
+- Per-agent sync status indicators to see which agents need syncing
+- Bulk tag editing for skills to organize skills faster
+- Agent toggle in project detail panel for quick agent assignment
+- Skill detail panel with local/diff/center tabs to compare skill versions
+- Agent dots and tags displayed in skill detail panel
+
+### Changed
+- Improved project workspace skill management with better organization
+- Skill detail panel now fully scrollable with a persistent close button
+
+### Fixed
+- Removed agent assignment count label from project skill cards for a cleaner look
+
+### Removed
+- No removals in this release
 ## [1.14.0] - 2026-04-18
 
 ### Added
