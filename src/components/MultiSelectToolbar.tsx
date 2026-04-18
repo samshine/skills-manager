@@ -1,10 +1,12 @@
-import { Trash2, CheckCircle2, Circle, RotateCcw, Tag } from "lucide-react";
+import { Trash2, CheckCircle2, Circle, RotateCcw, Tag, Download, Upload } from "lucide-react";
 import { cn } from "../utils";
 
 interface MultiSelectToolbarLabels {
   hint: string;
   selected: string;
   update?: string;
+  updateProject?: string;
+  updateCenter?: string;
   delete: string;
   enable: string;
   disable: string;
@@ -19,10 +21,16 @@ interface MultiSelectToolbarProps {
   isAllSelected: boolean;
   anyDisabled: boolean;
   anyUpdatable?: boolean;
+  anyCanUpdateProject?: boolean;
+  anyCanUpdateCenter?: boolean;
   showToggle: boolean;
   updating?: boolean;
+  updatingProject?: boolean;
+  updatingCenter?: boolean;
   labels: MultiSelectToolbarLabels;
   onUpdate?: () => void;
+  onUpdateProject?: () => void;
+  onUpdateCenter?: () => void;
   onDelete: () => void;
   onToggle: () => void;
   onSelectAll: () => void;
@@ -35,10 +43,16 @@ export function MultiSelectToolbar({
   isAllSelected,
   anyDisabled,
   anyUpdatable = false,
+  anyCanUpdateProject = false,
+  anyCanUpdateCenter = false,
   showToggle,
   updating = false,
+  updatingProject = false,
+  updatingCenter = false,
   labels,
   onUpdate,
+  onUpdateProject,
+  onUpdateCenter,
   onDelete,
   onToggle,
   onSelectAll,
@@ -60,6 +74,26 @@ export function MultiSelectToolbar({
             >
               <RotateCcw className={cn("h-3.5 w-3.5", updating && "animate-spin")} />
               {labels.update}
+            </button>
+          )}
+          {anyCanUpdateProject && labels.updateProject && onUpdateProject && (
+            <button
+              onClick={onUpdateProject}
+              disabled={updatingProject}
+              className="inline-flex items-center gap-1.5 rounded-md bg-sky-600/90 px-2.5 py-1 text-[13px] font-medium text-white hover:bg-sky-500 transition-colors disabled:opacity-50"
+            >
+              <Download className={cn("h-3.5 w-3.5", updatingProject && "animate-spin")} />
+              {labels.updateProject}
+            </button>
+          )}
+          {anyCanUpdateCenter && labels.updateCenter && onUpdateCenter && (
+            <button
+              onClick={onUpdateCenter}
+              disabled={updatingCenter}
+              className="inline-flex items-center gap-1.5 rounded-md bg-amber-600/90 px-2.5 py-1 text-[13px] font-medium text-white hover:bg-amber-500 transition-colors disabled:opacity-50"
+            >
+              <Upload className={cn("h-3.5 w-3.5", updatingCenter && "animate-spin")} />
+              {labels.updateCenter}
             </button>
           )}
           {onEditTags && labels.editTags && (

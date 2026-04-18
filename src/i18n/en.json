@@ -631,6 +631,15 @@
     "batchDisable": "Disable {{count}}",
     "batchEnabled": "{{count}} skills enabled",
     "batchDisabled": "{{count}} skills disabled",
-    "batchToggleFailed": "{{count}} skills failed to update"
+    "batchToggleFailed": "{{count}} skills failed to update",
+    "batchUpdateCenter": "Update Center ({{count}})",
+    "batchUpdateProject": "Update Project ({{count}})",
+    "batchUpdatedCenter": "{{count}} skills updated to Skills Center",
+    "batchUpdatedProject": "{{count}} skills updated in project",
+    "batchUpdateCenterFailed": "{{count}} skills failed to update to Skills Center",
+    "batchUpdateProjectFailed": "{{count}} skills failed to update in project",
+    "batchEditTags": "Tags ({{count}})",
+    "batchTagsUpdated": "Tags updated for {{count}} center skills",
+    "batchTagsFailed": "{{count}} center skills failed to update tags"
   }
 }

@@ -631,6 +631,15 @@
     "batchDisable": "停用 {{count}} 个",
     "batchEnabled": "已启用 {{count}} 个 Skill",
     "batchDisabled": "已停用 {{count}} 个 Skill",
-    "batchToggleFailed": "{{count}} 个 Skill 更新失败"
+    "batchToggleFailed": "{{count}} 个 Skill 更新失败",
+    "batchUpdateCenter": "更新中心 ({{count}})",
+    "batchUpdateProject": "更新项目 ({{count}})",
+    "batchUpdatedCenter": "已更新 {{count}} 个 Skill 到 Skills 中心",
+    "batchUpdatedProject": "已更新项目中的 {{count}} 个 Skill",
+    "batchUpdateCenterFailed": "{{count}} 个 Skill 更新到 Skills 中心失败",
+    "batchUpdateProjectFailed": "{{count}} 个 Skill 更新到项目失败",
+    "batchEditTags": "标签 ({{count}})",
+    "batchTagsUpdated": "已更新 {{count}} 个中心 Skill 的标签",
+    "batchTagsFailed": "{{count}} 个中心 Skill 标签更新失败"
   }
 }

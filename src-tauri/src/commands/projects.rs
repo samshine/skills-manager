@@ -582,10 +582,16 @@ pub async fn get_project_skills(
         let mut skills = read_workspace_skills(&record, &configs);
 
         let all_managed = store.get_all_skills().unwrap_or_default();
+        let tags_map = store.get_tags_map().unwrap_or_default();
         for skill in &mut skills {
             let matched = find_best_center_match(skill, &all_managed);
             skill.in_center = matched.is_some();
             skill.center_skill_id = matched.map(|m| m.id.clone());
+            skill.tags = skill
+                .center_skill_id
+                .as_ref()
+                .and_then(|skill_id| tags_map.get(skill_id).cloned())
+                .unwrap_or_default();
             skill.sync_status = classify_sync_status(skill, matched);
         }
 

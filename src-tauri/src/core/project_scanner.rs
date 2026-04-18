@@ -29,6 +29,8 @@ pub struct ProjectSkillInfo {
     #[serde(default)]
     pub agent_display_name: String,
     #[serde(default)]
+    pub tags: Vec<String>,
+    #[serde(default)]
     pub in_center: bool,
     #[serde(default)]
     pub sync_status: String,
@@ -171,6 +173,7 @@ fn read_skills_from_dir_recursive(
                 enabled,
                 agent: agent.to_string(),
                 agent_display_name: agent_display_name.to_string(),
+                tags: Vec::new(),
                 in_center: false,
                 sync_status: "project_only".to_string(),
                 center_skill_id: None,

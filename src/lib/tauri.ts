@@ -143,6 +143,7 @@ export interface ProjectSkill {
   enabled: boolean;
   agent: string;
   agent_display_name: string;
+  tags: string[];
   in_center: boolean;
   sync_status: "project_only" | "in_sync" | "project_newer" | "center_newer" | "diverged";
   center_skill_id: string | null;

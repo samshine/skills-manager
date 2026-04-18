@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import {
-  X,
   Folder,
   CheckCircle2,
   Circle,
@@ -23,6 +21,7 @@ import {
   type SkillToolToggle,
 } from "../lib/tauri";
 import { DocumentDiffViewer } from "./DocumentDiffViewer";
+import { DetailSheet } from "./DetailSheet";
 import { SkillMarkdown } from "./SkillMarkdown";
 
 interface Props {
@@ -51,7 +50,7 @@ export function SkillDetailPanel({
     skill.remote_revision ?? "",
   ].join(":");
 
-  return createPortal(
+  return (
     <SkillDetailPanelContent
       key={panelKey}
       skill={skill}
@@ -59,8 +58,7 @@ export function SkillDetailPanel({
       toolToggles={toolToggles}
       togglingTool={togglingTool}
       onToggleTool={onToggleTool}
-    />,
-    document.body
+    />
   );
 }
 
@@ -182,89 +180,79 @@ function SkillDetailPanelContent({
     toolToggles?.filter((item) => item.installed && item.globally_enabled && item.enabled).length ?? 0;
   const unavailableToggleCount = (toolToggles?.length ?? 0) - availableToggleCount;
 
-  return (
-    <div className="fixed top-[28px] right-0 bottom-0 left-[220px] z-40 flex">
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative h-full w-full overflow-y-auto border-l border-border-subtle bg-bg-secondary shadow-2xl animate-in slide-in-from-right duration-200">
-        <div className="border-b border-border-subtle px-6 pt-6 pb-5 animate-in fade-in duration-300">
-          <div className="mb-3 flex items-start justify-between gap-4">
-            <h2 className="min-w-0 text-[30px] font-semibold leading-tight tracking-tight text-primary animate-in slide-in-from-left-2 duration-300">
-              <span className="block truncate">{skill.name}</span>
-            </h2>
-            <button
-              onClick={onClose}
-              className="text-muted hover:text-secondary p-1.5 rounded-[4px] hover:bg-surface-hover transition-colors outline-none shrink-0"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-          {skill.description && (
-            <p className="text-[15px] leading-7 text-secondary line-clamp-3">{skill.description}</p>
-          )}
-          <div className="mt-4 flex min-w-0 items-center gap-2 text-[13px] text-muted">
-            <Folder className="h-3.5 w-3.5 shrink-0" />
-            <span className="font-mono truncate" title={skill.central_path}>
-              {skill.central_path}
+  const meta = (
+    <>
+      <div className="flex min-w-0 items-center gap-2 text-[13px] text-muted">
+        <Folder className="h-3.5 w-3.5 shrink-0" />
+        <span className="font-mono truncate" title={skill.central_path}>
+          {skill.central_path}
+        </span>
+      </div>
+      {metadataItems.length > 0 && (
+        <div className="mt-4 rounded-xl border border-border-subtle bg-surface/70">
+          <button
+            type="button"
+            onClick={() => setIsMetadataExpanded((prev) => !prev)}
+            aria-expanded={isMetadataExpanded}
+            aria-controls="skill-source-metadata"
+            className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
+          >
+            <span className="flex min-w-0 items-center gap-2">
+              <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border-subtle bg-bg-secondary px-2 py-1 text-[12px] text-muted">
+                {sourceIcon(skill.source_type)}
+                {sourceTypeLabel(skill.source_type)}
+              </span>
+              <span className="truncate text-[13px] font-medium text-secondary">
+                {t("mySkills.sourceType")}
+              </span>
             </span>
-          </div>
-          {metadataItems.length > 0 && (
-            <div className="mt-4 rounded-xl border border-border-subtle bg-surface/70">
-              <button
-                type="button"
-                onClick={() => setIsMetadataExpanded((prev) => !prev)}
-                aria-expanded={isMetadataExpanded}
-                aria-controls="skill-source-metadata"
-                className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
-              >
-                <span className="flex min-w-0 items-center gap-2">
-                  <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-border-subtle bg-bg-secondary px-2 py-1 text-[12px] text-muted">
-                    {sourceIcon(skill.source_type)}
-                    {sourceTypeLabel(skill.source_type)}
-                  </span>
-                  <span className="truncate text-[13px] font-medium text-secondary">
-                    {t("mySkills.sourceType")}
-                  </span>
-                </span>
-                <span className="inline-flex shrink-0 items-center gap-1 text-[12px] text-muted">
-                  <span>
-                    {isMetadataExpanded
-                      ? t("mySkills.collapseAgentToggles")
-                      : t("mySkills.expandAgentToggles")}
-                  </span>
-                  {isMetadataExpanded ? (
-                    <ChevronUp className="h-3.5 w-3.5" />
-                  ) : (
-                    <ChevronDown className="h-3.5 w-3.5" />
-                  )}
-                </span>
-              </button>
-              {isMetadataExpanded && (
-                <div
-                  id="skill-source-metadata"
-                  className="border-t border-border-subtle px-4 py-3"
-                >
-                  <div className="grid gap-2 md:grid-cols-2">
-                    {metadataItems.map((item) => (
-                      <div key={item.label} className="min-w-0">
-                        <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-faint">
-                          {item.label}
-                        </div>
-                        <div
-                          className="mt-0.5 truncate font-mono text-[12.5px] text-secondary"
-                          title={item.value ?? undefined}
-                        >
-                          {item.value}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+            <span className="inline-flex shrink-0 items-center gap-1 text-[12px] text-muted">
+              <span>
+                {isMetadataExpanded
+                  ? t("mySkills.collapseAgentToggles")
+                  : t("mySkills.expandAgentToggles")}
+              </span>
+              {isMetadataExpanded ? (
+                <ChevronUp className="h-3.5 w-3.5" />
+              ) : (
+                <ChevronDown className="h-3.5 w-3.5" />
               )}
+            </span>
+          </button>
+          {isMetadataExpanded && (
+            <div id="skill-source-metadata" className="border-t border-border-subtle px-4 py-3">
+              <div className="grid gap-2 md:grid-cols-2">
+                {metadataItems.map((item) => (
+                  <div key={item.label} className="min-w-0">
+                    <div className="text-[11px] font-medium uppercase tracking-[0.08em] text-faint">
+                      {item.label}
+                    </div>
+                    <div
+                      className="mt-0.5 truncate font-mono text-[12.5px] text-secondary"
+                      title={item.value ?? undefined}
+                    >
+                      {item.value}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
+      )}
+    </>
+  );
 
-        {toolToggles && onToggleTool && (
+  return (
+    <DetailSheet
+      open={true}
+      title={skill.name}
+      description={skill.description ? <p className="line-clamp-3">{skill.description}</p> : undefined}
+      meta={meta}
+      onClose={onClose}
+    >
+      {toolToggles && onToggleTool && (
+        <div className="mb-4 rounded-xl border border-border-subtle">
           <div className="border-b border-border-subtle px-6 py-2.5">
             <div className="flex items-center justify-between gap-2 text-[13px]">
               <div className="flex min-w-0 items-center gap-2">
@@ -352,64 +340,62 @@ function SkillDetailPanelContent({
               </div>
             )}
           </div>
-        )}
+        </div>
+      )}
 
-        <div className="px-5 py-5 scrollbar-hide">
-          {supportsSourceDiff && (
-            <div className="mb-4 flex flex-wrap items-center gap-2">
-              {(["local", "diff", "source"] as const).map((tab) => (
-                <button
-                  key={tab}
-                  type="button"
-                  onClick={() => setContentTab(tab)}
-                  className={cn(
-                    "rounded-full px-3 py-1.5 text-[12px] font-medium transition-colors",
-                    contentTab === tab
-                      ? "bg-accent text-white"
-                      : "bg-surface-hover text-muted hover:text-secondary"
-                  )}
-                  disabled={(tab === "diff" || tab === "source") && sourceLoading}
-                >
-                  {tab === "local"
-                    ? t("mySkills.docTabs.local")
-                    : tab === "diff"
-                      ? t("mySkills.docTabs.diff")
-                      : t("mySkills.docTabs.source")}
-                </button>
-              ))}
-              {activeSourceDoc && (
-                <span className="rounded-full border border-border-subtle bg-surface px-2 py-1 text-[12px] text-muted">
-                  {activeSourceDoc.source_label} · {activeSourceDoc.revision.slice(0, 7)}
-                </span>
+      {supportsSourceDiff && (
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          {(["local", "diff", "source"] as const).map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => setContentTab(tab)}
+              className={cn(
+                "rounded-full px-3 py-1.5 text-[12px] font-medium transition-colors",
+                contentTab === tab
+                  ? "bg-accent text-white"
+                  : "bg-surface-hover text-muted hover:text-secondary"
               )}
-            </div>
-          )}
-
-          {loading ? (
-            <div className="text-[13px] text-muted text-center mt-12">{t("common.loading")}</div>
-          ) : contentTab === "diff" ? (
-            activeDoc && activeSourceDoc ? (
-              <DocumentDiffViewer original={activeDoc.content} updated={activeSourceDoc.content} />
-            ) : sourceLoading ? (
-              <div className="text-[13px] text-muted text-center mt-12">{t("common.loading")}</div>
-            ) : (
-              <div className="text-[13px] text-muted text-center mt-12">{t("mySkills.sourceDiffUnavailable")}</div>
-            )
-          ) : contentTab === "source" ? (
-            sourceLoading ? (
-              <div className="text-[13px] text-muted text-center mt-12">{t("common.loading")}</div>
-            ) : activeSourceDoc ? (
-              <SkillMarkdown content={activeSourceDoc.content} />
-            ) : (
-              <div className="text-[13px] text-muted text-center mt-12">{t("mySkills.sourceDiffUnavailable")}</div>
-            )
-          ) : activeDoc ? (
-            <SkillMarkdown content={activeDoc.content} />
-          ) : (
-            <div className="text-[13px] text-muted text-center mt-12">{t("common.documentMissing")}</div>
+              disabled={(tab === "diff" || tab === "source") && sourceLoading}
+            >
+              {tab === "local"
+                ? t("mySkills.docTabs.local")
+                : tab === "diff"
+                  ? t("mySkills.docTabs.diff")
+                  : t("mySkills.docTabs.source")}
+            </button>
+          ))}
+          {activeSourceDoc && (
+            <span className="rounded-full border border-border-subtle bg-surface px-2 py-1 text-[12px] text-muted">
+              {activeSourceDoc.source_label} · {activeSourceDoc.revision.slice(0, 7)}
+            </span>
           )}
         </div>
-      </div>
-    </div>
+      )}
+
+      {loading ? (
+        <div className="mt-12 text-center text-[13px] text-muted">{t("common.loading")}</div>
+      ) : contentTab === "diff" ? (
+        activeDoc && activeSourceDoc ? (
+          <DocumentDiffViewer original={activeDoc.content} updated={activeSourceDoc.content} />
+        ) : sourceLoading ? (
+          <div className="mt-12 text-center text-[13px] text-muted">{t("common.loading")}</div>
+        ) : (
+          <div className="mt-12 text-center text-[13px] text-muted">{t("mySkills.sourceDiffUnavailable")}</div>
+        )
+      ) : contentTab === "source" ? (
+        sourceLoading ? (
+          <div className="mt-12 text-center text-[13px] text-muted">{t("common.loading")}</div>
+        ) : activeSourceDoc ? (
+          <SkillMarkdown content={activeSourceDoc.content} />
+        ) : (
+          <div className="mt-12 text-center text-[13px] text-muted">{t("mySkills.sourceDiffUnavailable")}</div>
+        )
+      ) : activeDoc ? (
+        <SkillMarkdown content={activeDoc.content} />
+      ) : (
+        <div className="mt-12 text-center text-[13px] text-muted">{t("common.documentMissing")}</div>
+      )}
+    </DetailSheet>
   );
 }

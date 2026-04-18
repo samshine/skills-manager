@@ -34,6 +34,7 @@ import { MultiSelectToolbar } from "../components/MultiSelectToolbar";
 import { BatchTagDialog } from "../components/BatchTagDialog";
 import { SyncDots } from "../components/SyncDots";
 import * as api from "../lib/tauri";
+import { getTagActiveColor, getTagColor } from "../lib/skillTags";
 import type {
   ManagedSkill,
   ToolInfo,
@@ -898,32 +899,6 @@ export function MySkills() {
       ? t("mySkills.updateActions.reimport")
       : t("mySkills.updateActions.update");
 
-  const tagColorClasses = [
-    "bg-blue-500/15 text-blue-600 dark:text-blue-400",
-    "bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
-    "bg-violet-500/15 text-violet-600 dark:text-violet-400",
-    "bg-amber-500/15 text-amber-600 dark:text-amber-400",
-    "bg-rose-500/15 text-rose-600 dark:text-rose-400",
-    "bg-cyan-500/15 text-cyan-600 dark:text-cyan-400",
-    "bg-orange-500/15 text-orange-600 dark:text-orange-400",
-    "bg-pink-500/15 text-pink-600 dark:text-pink-400",
-  ];
-  const tagActiveClasses = [
-    "bg-blue-500 text-white dark:bg-blue-500",
-    "bg-emerald-500 text-white dark:bg-emerald-500",
-    "bg-violet-500 text-white dark:bg-violet-500",
-    "bg-amber-500 text-white dark:bg-amber-500",
-    "bg-rose-500 text-white dark:bg-rose-500",
-    "bg-cyan-500 text-white dark:bg-cyan-500",
-    "bg-orange-500 text-white dark:bg-orange-500",
-    "bg-pink-500 text-white dark:bg-pink-500",
-  ];
-  const getTagColor = (tag: string) => {
-    const idx = allTags.indexOf(tag);
-    const colorIndex = (idx === -1 ? 0 : idx) % tagColorClasses.length;
-    return tagColorClasses[colorIndex];
-  };
-
   const statusBadge = (skill: ManagedSkill) => {
     if (skill.update_status === "update_available") {
       return {
@@ -1104,8 +1079,7 @@ export function MySkills() {
         {allTags.length > 0 && (
           <>
             <span className="mx-0.5 h-3 w-px bg-border-subtle" />
-            {allTags.map((tag, i) => {
-              const colorIndex = i % tagColorClasses.length;
+            {allTags.map((tag) => {
               const isActive = tagFilters.has(tag);
               return (
                 <button
@@ -1113,7 +1087,7 @@ export function MySkills() {
                   onClick={() => setTagFilters(toggleFilter(tagFilters, tag))}
                   className={cn(
                     "rounded-full px-2.5 py-0.5 text-[12px] font-medium transition-colors",
-                    isActive ? tagActiveClasses[colorIndex] : tagColorClasses[colorIndex]
+                    isActive ? getTagActiveColor(tag, allTags) : getTagColor(tag, allTags)
                   )}
                 >
                   {tag}
@@ -1338,7 +1312,7 @@ export function MySkills() {
                           key={tag}
                           className={cn(
                             "group/tag inline-flex items-center gap-0.5 rounded-full px-2 py-0.5 text-[11px] font-medium",
-                            getTagColor(tag)
+                            getTagColor(tag, allTags)
                           )}
                         >
                           {tag}
@@ -1476,7 +1450,7 @@ export function MySkills() {
                       key={tag}
                       className={cn(
                         "inline-flex items-center rounded-full px-1.5 py-0.5 text-[11px] font-medium",
-                        getTagColor(tag)
+                        getTagColor(tag, allTags)
                       )}
                     >
                       {tag}

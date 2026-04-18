@@ -2,11 +2,14 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { X, Plus, Tag } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { cn } from "../utils";
-import type { ManagedSkill } from "../lib/tauri";
+
+interface TaggableSkill {
+  tags: string[];
+}
 
 interface Props {
   open: boolean;
-  skills: ManagedSkill[];
+  skills: TaggableSkill[];
   allTags: string[];
   onClose: () => void;
   onApply: (adds: string[], removes: string[]) => Promise<void>;
